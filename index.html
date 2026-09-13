@@ -1011,14 +1011,19 @@ function mpRestart(){ startedOnce=true; playing=true; try{start();}catch(e){} pp
 var DL_FILES=['assets/download-reel1-original-audio.mp4','assets/download-reel2-original-audio.mp4','assets/download-reel3-original-audio.mp4'];
 function dlAnchor(url,name){ var a=document.createElement('a'); a.href=url; a.download=name; a.rel='noopener'; a.style.display='none'; document.body.appendChild(a); a.click(); setTimeout(function(){try{document.body.removeChild(a);}catch(e){}},1500); }
 function downloadReel(idx){
-  var url=DL_FILES[idx], name='fellowship_memory_'+(idx+1)+'.mp4';
-  var isHttp=/^https?:/i.test(location.protocol);
-  if(!isHttp){ dlAnchor(url,name); return; }                      /* file:// -> direct anchor fallback */
-  try{
-    fetch(url).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
-      .then(function(blob){ var u=URL.createObjectURL(blob); dlAnchor(u,name); setTimeout(function(){try{URL.revokeObjectURL(u);}catch(e){}},60000); })
-      .catch(function(){ dlAnchor(url,name); });                  /* Safari/iOS or fetch fail -> direct anchor */
-  }catch(e){ dlAnchor(url,name); }
+  var url = DL_FILES[idx];
+  if(!url) return;
+
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'fellowship_memory_' + (idx + 1) + '.mp4';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+
+  setTimeout(function(){
+    try { document.body.removeChild(a); } catch(e){}
+  }, 100);
 }
 
 /* ===== Scene10 download buttons — delegated click (robust over cam transforms) ===== */
